@@ -6,25 +6,42 @@
   // setInterval(function(){
   // 	socket.emit('event','d1','d2');
   // },1000);
-  
-
-  function show(){
-  	var v = document.getElementById('t1').value;
- 
-  	
-  	 setInterval(function(){
-  	socket.emit('event',v,'d2');
-  },1000);
-  	
-  	 socket.on(v,function(d){
-  	console.log(d);
-  })
+  var senderData,msg,reciverData;
+  function sender(){
+  	senderData= document.getElementById('senderData').value;
+    reciverData = document.getElementById('reciverData').value;
+    msg = document.getElementById('msg').value;
+     socket.emit('event',senderData+reciverData,msg);
   }
+  function reciver(){
+    senderData= document.getElementById('senderData').value;
+    reciverData = document.getElementById('reciverData').value;
+     socket.on(reciverData+senderData,function(d){
+      alert(d);
+    })
+   }
 </script>
 	</head>
 
 <body>
-	<input type="text" value="" id="t1">
-	<button onClick="show()">call socket</button>
+ 
+
+  <table>
+    <tr>
+      <td>sender</td>
+      <td> message</td>
+      <td>reciver</td>    
+  </tr>  
+  <tr>
+      <td><input type="text" value="" id="senderData"></td>
+      <td><input type="text" value="" id="msg"></td>
+      <td><input type="text" value="" id="reciverData"></td>    
+  </tr> 
+  <tr>
+      <td><button onClick="sender()">send</button></td>
+      <td></td>
+      <td><button onClick="reciver()">recive</button></td>    
+  </tr>
+</table>
 	</body>
 	</html>

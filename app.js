@@ -8,9 +8,9 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-   socket.on('event', function(data1){
-   	console.log(data1);
-   io.emit(data1,data1+new Date().toISOString());
+   socket.on('event', function(data1,data2){
+   	console.log(data1,data2);
+   io.emit(data1,data2);
    });
 });
 
