@@ -1,0 +1,30 @@
+<html>
+<head>
+	<script src="/socket.io/socket.io.js"></script>
+<script>
+  var socket = io();
+  // setInterval(function(){
+  // 	socket.emit('event','d1','d2');
+  // },1000);
+  
+
+  function show(){
+  	var v = document.getElementById('t1').value;
+ 
+  	
+  	 setInterval(function(){
+  	socket.emit('event',v,'d2');
+  },1000);
+  	
+  	 socket.on(v,function(d){
+  	console.log(d);
+  })
+  }
+</script>
+	</head>
+
+<body>
+	<input type="text" value="" id="t1">
+	<button onClick="show()">call socket</button>
+	</body>
+	</html>
