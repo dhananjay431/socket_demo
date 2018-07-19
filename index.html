@@ -2,21 +2,27 @@
 <head>
 	<script src="/socket.io/socket.io.js"></script>
 <script>
-  var socket = io();
+  var xxx = io("http://localhost:3000/cht");
   // setInterval(function(){
-  // 	socket.emit('event','d1','d2');
+  // 	xxx.emit('event','d1','d2');
   // },1000);
+   // xxx.on('hi',function(d){
+   //    alert(d);
+
+   //  })
+
+
   var senderData,msg,reciverData;
   function sender(){
-  	senderData= document.getElementById('senderData').value;
-    reciverData = document.getElementById('reciverData').value;
-    msg = document.getElementById('msg').value;
-     socket.emit('event',senderData+reciverData,msg);
+  	 senderData= document.getElementById('senderData').value;
+  	   reciverData = document.getElementById('reciverData').value;
+  	    msg = document.getElementById('msg').value;
+  	xxx.emit('event', senderData+reciverData,msg);
   }
   function reciver(){
     senderData= document.getElementById('senderData').value;
     reciverData = document.getElementById('reciverData').value;
-     socket.on(reciverData+senderData,function(d){
+     xxx.on(reciverData+senderData,function(d){
       alert(d);
     })
    }
