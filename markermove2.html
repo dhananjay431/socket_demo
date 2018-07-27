@@ -1,0 +1,318 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>Google Maps Animated Marker Move Demo</title>
+
+<style type="text/css">
+  html,body,#map_canvas {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
+    font-size: 12px;
+  }
+  #controls {
+    position: absolute;
+    bottom: 28px;
+    right: 6px;
+    width: 200px;
+    height: 78px;
+    background: rgba(0,0,0,0.85);
+    box-shadow: rgba(0,0,0,0.5) 0 3px 5px;
+    -moz-box-shadow: rgba(0,0,0,0.5) 0 3px 5px;
+    -webkit-box-shadow: rgba(0,0,0,0.5) 0 3px 5px;
+    color: #fff;
+    padding: 10px;
+
+    -moz-border-radius: 5px;
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+  }
+  #controls .row {
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  #controls .row label {
+    width: 60px;
+    float: left;
+    font-weight: bold;
+    margin-right: 10px;
+    line-height: 23px;
+  }
+  #controls .row select,
+  #controls .row input {
+    width: 120px;
+    float: left;
+  }
+  #controls .row input#durationOption {
+    width: 113px;
+  }
+  #controls .row a {
+    display: block;
+    color: #7EB1FF;
+    text-decoration: none;
+    font-size: 10px;
+  }
+
+</style>
+
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script> 
+    <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    
+    <script type="text/javascript" src="../markerAnimate.js"></script>
+
+
+    <script>
+        
+      var delay = 100;
+      var _goToPoint,_moveMarker,start,flag= 'init';
+    
+var speed= 100;
+
+          var car = 'M17.402,0H5.643C2.526,0,0,3.467,0,6.584v34.804c0,3.116,2.526,5.644,5.643,5.644h11.759c3.116,0,5.644-2.527,5.644-5.644 V6.584C23.044,3.467,20.518,0,17.402,0z M22.057,14.188v11.665l-2.729,0.351v-4.806L22.057,14.188z M20.625,10.773 c-1.016,3.9-2.219,8.51-2.219,8.51H4.638l-2.222-8.51C2.417,10.773,11.3,7.755,20.625,10.773z M3.748,21.713v4.492l-2.73-0.349 V14.502L3.748,21.713z M1.018,37.938V27.579l2.73,0.343v8.196L1.018,37.938z M2.575,40.882l2.218-3.336h13.771l2.219,3.336H2.575z M19.328,35.805v-7.872l2.729-0.355v10.048L19.328,35.805z';
+    var carIcon = {
+      path: car ,
+      scale: .6,
+      strokeColor: 'white',
+      strokeWeight: .10,
+      fillOpacity: 1,
+      fillColor: 'blue',
+      //fillColor: '#b75656',
+      offset: '5%',
+      // rotation: parseInt(heading[i]),
+      anchor: new google.maps.Point(10, 25), // orig 10,50 back of car, 10,0 front of car, 10,25 center of car,
+      rotation: 0
+    };
+
+        var icons = {
+      "car": carIcon
+    }
+     
+
+        var flightPlanCoordinates = [{lat:18.52044,lng:73.85688}, {lat:18.521160000000002,lng:73.85817}, {lat:18.523130000000002,lng:73.85824000000001}, {lat:18.52409,lng:73.85803}, {lat:18.52532,lng:73.85977000000001}, {lat:18.527890000000003,lng:73.86338}, {lat:18.529310000000002,lng:73.86325000000001}, {lat:18.52965,lng:73.86240000000001}, {lat:18.52961,lng:73.85937000000001}, {lat:18.53031,lng:73.85516000000001}, {lat:18.53206,lng:73.85369}, {lat:18.53292,lng:73.857}, {lat:18.532950000000003,lng:73.8596}, {lat:18.534090000000003,lng:73.86116000000001}, {lat:18.536890000000003,lng:73.86249000000001}, {lat:18.538700000000002,lng:73.86473000000001}, {lat:18.54071,lng:73.86769000000001}, {lat:18.543400000000002,lng:73.87578}, {lat:18.544620000000002,lng:73.87681},
+        {lat:18.545460000000002,lng:73.87608}, {lat:18.547900000000002,lng:73.87231000000001}, {lat:18.548740000000002,lng:73.87098}, {lat:18.549670000000003,lng:73.87157}, {lat:18.55281,lng:73.87352}, {lat:18.55449,lng:73.87445000000001}, {lat:18.55908,lng:73.87620000000001}, {lat:18.5654,lng:73.87763000000001}, {lat:18.56735,lng:73.87941000000001}, {lat:18.56913,lng:73.87912}, {lat:18.575390000000002,lng:73.87669000000001}, {lat:18.57881,lng:73.87636}, {lat:18.582060000000002,lng:73.87524}, {lat:18.589820000000003,lng:73.87458000000001}, {lat:18.601930000000003,lng:73.87273}, {lat:18.60685,lng:73.87337000000001}, {lat:18.614,lng:73.87287}, {lat:18.61604,lng:73.87382000000001}, {lat:18.619690000000002,lng:73.87409000000001}, {lat:18.63344,lng:73.87491}, {lat:18.637030000000003,lng:73.87464}, {lat:18.638620000000003,lng:73.87530000000001}, {lat:18.640530000000002,lng:73.87692000000001}, {lat:18.643250000000002,lng:73.87912}, {lat:18.64743,lng:73.88079}, {lat:18.6508,lng:73.88219000000001}, {lat:18.65275,lng:73.88369}, {lat:18.65887,lng:73.88605000000001}, {lat:18.663860000000003,lng:73.887}, {lat:18.67029,lng:73.89131}, {lat:18.67244,lng:73.89246}, {lat:18.67415,lng:73.89488}, {lat:18.67508,lng:73.89716}, {lat:18.67575,lng:73.89706000000001}, {lat:18.675970000000003,lng:73.89831000000001}, {lat:18.6761,lng:73.89897}, {lat:18.67726,lng:73.89905}, {lat:18.67911,lng:73.89945}, {lat:18.6839,lng:73.90329000000001}, {lat:18.68619,lng:73.90587000000001}, {lat:18.69037,lng:73.91147000000001}, {lat:18.692860000000003,lng:73.91495}, {lat:18.697210000000002,lng:73.91705}, {lat:18.701240000000002,lng:73.9226}, {lat:18.703010000000003,lng:73.92328}, {lat:18.70447,lng:73.92490000000001}, {lat:18.705070000000003,lng:73.92663}, {lat:18.708810000000003,lng:73.93034}, {lat:18.71319,lng:73.93348}, {lat:18.715200000000003,lng:73.93512000000001}, {lat:18.717090000000002,lng:73.93562}, {lat:18.71863,lng:73.93652}, {lat:18.718690000000002,lng:73.93875000000001}, {lat:18.719320000000003,lng:73.94088}, {lat:18.721790000000002,lng:73.94256}, {lat:18.72353,lng:73.94344000000001}, {lat:18.72529,lng:73.94384000000001}, {lat:18.726960000000002,lng:73.94496000000001}, {lat:18.731160000000003,lng:73.94605}, {lat:18.73517,lng:73.94656}, {lat:18.735110000000002,lng:73.94517}, {lat:18.73742,lng:73.94723}, {lat:18.736220000000003,lng:73.95024000000001}, {lat:18.736150000000002,lng:73.95227000000001}, {lat:18.73901,lng:73.9526}, {lat:18.74577,lng:73.95508000000001}, {lat:18.74906,lng:73.95617}, {lat:18.751720000000002,lng:73.95577}, {lat:18.75713,lng:73.95546}, {lat:18.75832,lng:73.95602000000001}, {lat:18.75919,lng:73.95587}, {lat:18.76029,lng:73.95474}, {lat:18.76211,lng:73.95425}, {lat:18.770750000000003,lng:73.95448}, {lat:18.774990000000003,lng:73.95443}, {lat:18.78402,lng:73.95659}, {lat:18.788500000000003,lng:73.95903000000001}, {lat:18.789550000000002,lng:73.95741000000001}, {lat:18.790270000000003,lng:73.95467000000001}, {lat:18.78975,lng:73.95297000000001}, {lat:18.78816,lng:73.95082000000001}, {lat:18.788420000000002,lng:73.94714}, {lat:18.78958,lng:73.94412000000001}, {lat:18.78938,lng:73.93876}, {lat:18.791120000000003,lng:73.93718000000001}, {lat:18.79128,lng:73.93556000000001}, {lat:18.79504,lng:73.92923}, {lat:18.796930000000003,lng:73.92984000000001}, {lat:18.797710000000002,lng:73.92862000000001}, {lat:18.80129,lng:73.92678000000001}, {lat:18.80328,lng:73.92351000000001}, {lat:18.806980000000003,lng:73.92007000000001}, {lat:18.812800000000003,lng:73.91161000000001}, {lat:18.815510000000003,lng:73.90896000000001}, {lat:18.81701,lng:73.90761}, {lat:18.824150000000003,lng:73.9037}, {lat:18.8317,lng:73.89934000000001}, {lat:18.83648,lng:73.89768000000001}, {lat:18.84082,lng:73.8979}, {lat:18.84363,lng:73.89596}, {lat:18.846400000000003,lng:73.89229}, {lat:18.847430000000003,lng:73.89091}, {lat:18.84954,lng:73.89058}, {lat:18.85323,lng:73.88783000000001}, {lat:18.85473,lng:73.88749}, {lat:18.85648,lng:73.88765000000001}, {lat:18.85838,lng:73.88894}, {lat:18.864890000000003,lng:73.89355}, {lat:18.869690000000002,lng:73.89670000000001}, {lat:18.87555,lng:73.89879}, {lat:18.88408,lng:73.90264}, {lat:18.88729,lng:73.90427000000001}, {lat:18.8916,lng:73.90728}, {lat:18.894440000000003,lng:73.90648}, {lat:18.89545,lng:73.90538000000001}, {lat:18.89779,lng:73.90571}, {lat:18.89899,lng:73.90674}, {lat:18.9008,lng:73.90679}, {lat:18.90089,lng:73.90805}, {lat:18.902060000000002,lng:73.9098}, {lat:18.90011,lng:73.91003}, {lat:18.89987,lng:73.91121000000001}, {lat:18.90059,lng:73.91285}, {lat:18.90331,lng:73.91481}, {lat:18.91475,lng:73.91826}, {lat:18.9191,lng:73.91944000000001}, {lat:18.92406,lng:73.92169000000001}, {lat:18.92743,lng:73.92583}, {lat:18.931,lng:73.92906}, {lat:18.933760000000003,lng:73.93158000000001}, {lat:18.937610000000003,lng:73.93633000000001}, {lat:18.942,lng:73.94051}, {lat:18.944270000000003,lng:73.94120000000001}, {lat:18.948610000000002,lng:73.94084000000001}, {lat:18.95269,lng:73.93996}, {lat:18.95446,lng:73.94017000000001}, {lat:18.9597,lng:73.94159}, {lat:18.96227,lng:73.94215000000001}, {lat:18.96743,lng:73.94496000000001}, {lat:18.969700000000003,lng:73.94510000000001}, {lat:18.97212,lng:73.94528000000001}, {lat:18.97842,lng:73.94649000000001}, {lat:18.98655,lng:73.9437}, {lat:18.990540000000003,lng:73.94281000000001}, {lat:18.99658,lng:73.94300000000001}, {lat:18.998260000000002,lng:73.94315}, {lat:19.00103,lng:73.94465000000001}, {lat:19.00759,lng:73.94826}, {lat:19.01236,lng:73.94912000000001}, {lat:19.01498,lng:73.94885000000001}, {lat:19.02024,lng:73.94988000000001}, {lat:19.031560000000002,lng:73.9538}, {lat:19.034950000000002,lng:73.95468000000001}, {lat:19.03799,lng:73.9547}, {lat:19.0425,lng:73.95669000000001}, {lat:19.04523,lng:73.95638000000001}, {lat:19.04588,lng:73.95576000000001}, {lat:19.047890000000002,lng:73.95572}, {lat:19.05571,lng:73.95818000000001}, {lat:19.060000000000002,lng:73.95948}, {lat:19.09428,lng:73.97009}, {lat:19.113580000000002,lng:73.97295000000001}, {lat:19.118550000000003,lng:73.97429000000001}, {lat:19.12227,lng:73.97552}, {lat:19.123070000000002,lng:73.97672}, {lat:19.127830000000003,lng:73.98516000000001}, {lat:19.131700000000002,lng:73.99551000000001}, {lat:19.134710000000002,lng:74.00369}, {lat:19.13888,lng:74.01761}, {lat:19.139780000000002,lng:74.02042}, {lat:19.14179,lng:74.02308000000001}, {lat:19.146590000000003,lng:74.02939}, {lat:19.153730000000003,lng:74.03905}, {lat:19.157410000000002,lng:74.04490000000001}, {lat:19.161540000000002,lng:74.05718}, {lat:19.16241,lng:74.06182000000001}, {lat:19.16422,lng:74.06629000000001}, {lat:19.16636,lng:74.06933000000001}, {lat:19.17274,lng:74.07758000000001}, {lat:19.18347,lng:74.09660000000001}, {lat:19.18551,lng:74.09971}, {lat:19.190430000000003,lng:74.1041}, {lat:19.19548,lng:74.10867}, {lat:19.199260000000002,lng:74.11254000000001}, {lat:19.20824,lng:74.12068000000001}, {lat:19.213150000000002,lng:74.1242}, {lat:19.214930000000003,lng:74.12478}, {lat:19.218780000000002,lng:74.12484}, {lat:19.224140000000002,lng:74.12663}, {lat:19.22943,lng:74.12807000000001}, {lat:19.233340000000002,lng:74.13083}, {lat:19.236230000000003,lng:74.13309000000001}, {lat:19.244760000000003,lng:74.13712000000001}, {lat:19.24904,lng:74.14083000000001}, {lat:19.25122,lng:74.14154}, {lat:19.255570000000002,lng:74.14108}, {lat:19.25824,lng:74.14135}, {lat:19.26124,lng:74.14353000000001}, {lat:19.265030000000003,lng:74.14824}, {lat:19.2724,lng:74.15034}, {lat:19.27501,lng:74.1517}, {lat:19.27886,lng:74.15376}, {lat:19.281000000000002,lng:74.15596000000001}, {lat:19.28376,lng:74.15757}, {lat:19.28773,lng:74.15964000000001}, {lat:19.291430000000002,lng:74.16597}, {lat:19.29407,lng:74.16948000000001}, {lat:19.300970000000003,lng:74.17066000000001}, {lat:19.314400000000003,lng:74.17359}, {lat:19.31668,lng:74.17460000000001}, {lat:19.321150000000003,lng:74.17906}, {lat:19.326960000000003,lng:74.18916}, {lat:19.327620000000003,lng:74.19187000000001}, {lat:19.332050000000002,lng:74.19628}, {lat:19.340580000000003,lng:74.2029}, {lat:19.34682,lng:74.20500000000001}, {lat:19.34778,lng:74.20717}, {lat:19.34824,lng:74.2082}, {lat:19.34956,lng:74.20892}, {lat:19.350810000000003,lng:74.20937}, {lat:19.3519,lng:74.21098}, {lat:19.35349,lng:74.21343}, {lat:19.354930000000003,lng:74.21300000000001}, {lat:19.36052,lng:74.20927}, {lat:19.363030000000002,lng:74.20661000000001}, {lat:19.36711,lng:74.20378000000001}, {lat:19.3775,lng:74.20579000000001}, {lat:19.3854,lng:74.20903000000001}, {lat:19.392200000000003,lng:74.21246000000001}, {lat:19.395190000000003,lng:74.2125}, {lat:19.398490000000002,lng:74.21253}, {lat:19.40212,lng:74.21144000000001}, {lat:19.408250000000002,lng:74.20928}, {lat:19.417360000000002,lng:74.20756}, {lat:19.42208,lng:74.20667}, {lat:19.42423,lng:74.20585000000001}, {lat:19.42733,lng:74.2035}, {lat:19.430120000000002,lng:74.20081}, {lat:19.43466,lng:74.19784}, {lat:19.439490000000003,lng:74.19311}, {lat:19.440240000000003,lng:74.19069}, {lat:19.44058,lng:74.18631}, {lat:19.44188,lng:74.18575000000001}, {lat:19.44273,lng:74.18626}, {lat:19.443550000000002,lng:74.18814}, {lat:19.445120000000003,lng:74.194}, {lat:19.44545,lng:74.19506000000001}, {lat:19.447480000000002,lng:74.19628}, {lat:19.449930000000002,lng:74.19841000000001}, {lat:19.45135,lng:74.19878}, {lat:19.45475,lng:74.19864000000001}, {lat:19.457610000000003,lng:74.20153}, {lat:19.459400000000002,lng:74.20431}, {lat:19.46302,lng:74.20620000000001}, {lat:19.464720000000003,lng:74.20747}, {lat:19.47013,lng:74.20614}, {lat:19.47512,lng:74.20320000000001}, {lat:19.47729,lng:74.20124000000001}, {lat:19.478920000000002,lng:74.20029000000001}, {lat:19.483690000000003,lng:74.1991}, {lat:19.49069,lng:74.19792000000001}, {lat:19.523120000000002,lng:74.20232}, {lat:19.53791,lng:74.20431}, {lat:19.540570000000002,lng:74.20378000000001}, {lat:19.546310000000002,lng:74.19951}, {lat:19.55002,lng:74.1978}, {lat:19.550410000000003,lng:74.19855000000001}, {lat:19.55289,lng:74.20141000000001}, {lat:19.554440000000003,lng:74.20274}, {lat:19.555410000000002,lng:74.20432000000001}, {lat:19.55565,lng:74.20670000000001}, {lat:19.555780000000002,lng:74.20789}, {lat:19.557360000000003,lng:74.20827000000001}, {lat:19.557850000000002,lng:74.2086}, {lat:19.558390000000003,lng:74.21095000000001}, {lat:19.55871,lng:74.2116}, {lat:19.561890000000002,lng:74.21180000000001}, {lat:19.564960000000003,lng:74.21262}, {lat:19.567500000000003,lng:74.21237}, {lat:19.569490000000002,lng:74.21147}, {lat:19.569650000000003,lng:74.21106}, {lat:19.57008,lng:74.20836}, {lat:19.575580000000002,lng:74.20713}, {lat:19.57703,lng:74.20644}, {lat:19.577080000000002,lng:74.2079}
+        ];
+
+
+      var marker, map;
+      function initialize() {
+
+
+
+
+        var myLatlng = new google.maps.LatLng(18.52044,73.85688);
+        var mapOptions = {
+          zoom: 14,
+          center: myLatlng,
+          mapTypeId: google.maps.MapTypeId.ROADMAP
+        }
+       var  map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+        marker = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: 'Hello World!',
+            //icon: 'https://maps.google.com/mapfiles/kml/shapes/parking_lot_maps.png'
+            icon: icons.car
+        });
+
+
+
+
+        var flightPath = new google.maps.Polyline({
+          path: flightPlanCoordinates,
+          geodesic: true,
+          strokeColor: '#FF0000',
+          strokeOpacity: 1.0,
+          strokeWeight: 2
+        });
+
+        flightPath.setMap(map);
+        
+      }
+
+
+    function animateMarker(marker, coords, km_h)
+{
+ var target = 0;
+ console.log(km_h)
+    
+    coords.push({lat:coords[coords.length-1].lat,lng:coords[coords.length-1].lng});
+    
+    _goToPoint =function()
+    {
+
+
+       speed = speed || 50;
+      
+        var lat = marker.position.lat();
+        var lng = marker.position.lng();
+        var step = (speed * 1000 * delay) / 3600000; // in meters
+        
+        var dest = new google.maps.LatLng(
+        coords[target].lat, coords[target].lng);
+        
+        var distance =
+        google.maps.geometry.spherical.computeDistanceBetween(
+        dest, marker.position); // in meters
+        
+        var numStep = distance / step;
+        var i = 0;
+        var deltaLat = (coords[target].lat - lat) / numStep;
+        var deltaLng = (coords[target].lng - lng) / numStep;
+        
+        _moveMarker =function()
+        {                 
+            lat += deltaLat;
+            lng += deltaLng;
+            i += step;
+        
+        
+
+            if (i < distance)
+            {  
+              var head = google.maps.geometry.spherical.computeHeading(marker.getPosition(), new google.maps.LatLng(lat, lng))
+              console.log(head);
+
+              if((head != 0)||(head == NaN)) {
+                debugger;
+                icons.car.rotation = head
+            } 
+            marker.setIcon(icons.car);  
+
+                marker.setPosition(new google.maps.LatLng(lat, lng));
+                start =  setTimeout(_moveMarker, delay);
+            }
+            else
+            {  
+            var head = google.maps.geometry.spherical.computeHeading(marker.getPosition(), new google.maps.LatLng(lat, lng));
+
+               if ((head != 0)||(head == NaN)) {
+                 debugger;
+                 icons.car.rotation = head
+            }
+            marker.setIcon(icons.car);  
+        console.log(head);
+           //   clearTimeout(start);
+             marker.setPosition(dest);
+                target++;
+                if (target == coords.length){ 
+                 // target = 0;
+                 flag = 'reset';
+                  clearTimeout(start);
+
+                   }
+                
+              start =    setTimeout(_goToPoint, delay);
+            }
+        }
+        _moveMarker();
+    }
+    _goToPoint();
+}
+
+function play(){
+   
+  animateMarker(marker,flightPlanCoordinates,speed)
+}
+function stop(){
+  console.log(flag);
+  if(flag == 'init'){
+    animateMarker(marker,flightPlanCoordinates,speed)
+      flag = 'stop';
+
+  }else
+  if(flag=='start')
+  {
+    _moveMarker();
+    flag = 'stop';
+  }else
+  if(flag=='stop')
+  {
+    clearTimeout(start);
+     flag = 'start';
+  }
+  if(flag == 'reset')
+  {
+     marker.setPosition(flightPlanCoordinates[0]);
+     flag = 'init';
+  }
+// flag =! flag;
+// if(flag){
+//  alert("true");
+  
+// _moveMarker();
+// }else{
+//  alert("false");
+//   clearTimeout(start);
+// }
+
+}
+
+
+function fast(b){
+ debugger;
+            console.log(b);
+            if(b == 'fast'){
+            speed += 500;
+            
+              console.log(speed)
+            }
+             if(b == 'slow'){
+              speed -= 500;
+          
+            }
+          
+          
+          
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  $(function(){
+    initialize();
+   //  animateMarker(marker,flightPlanCoordinates,200);
+  })();
+    
+    </script>
+  </head>
+  <body>
+    <button onClick="play()">play </button>  
+      <button onClick="stop()">stop </button>
+      <button onClick="fast('fast')">fast </button>
+      <button onClick="fast('slow')">slow </button>
+    <div id="map_canvas"></div>
+
+  
+     
+   
+      
+    </div>
+
+  </body>
+</html>
+
