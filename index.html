@@ -17,13 +17,17 @@
   	 senderData= document.getElementById('senderData').value;
   	   reciverData = document.getElementById('reciverData').value;
   	    msg = document.getElementById('msg').value;
-  	xxx.emit('event', senderData+reciverData,msg);
+
+  	    setInterval(function(){
+  	    	xxx.emit('event', senderData+reciverData,msg);
+  	    },1000);
+  	
   }
   function reciver(){
     senderData= document.getElementById('senderData').value;
     reciverData = document.getElementById('reciverData').value;
      xxx.on(reciverData+senderData,function(d){
-      alert(d);
+     console.log(d);
     })
    }
 </script>
@@ -46,7 +50,7 @@
   <tr>
       <td><button onClick="sender()">send</button></td>
       <td></td>
-      <td><button onClick="reciver()">recive</button></td>    
+      <td><button onClick="reciver()">add</button></td>    
   </tr>
 </table>
 	</body>
