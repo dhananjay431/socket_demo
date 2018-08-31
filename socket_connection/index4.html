@@ -7,13 +7,13 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.10/lodash.min.js"></script>
 <script>
   var allData={};
-	var _io = io.connect('https://www.oneqlik.in/gps', {
+  var _io = io.connect('https://www.oneqlik.in/gps', {
             secure: true, rejectUnauthorized: false, transports: ["websocket", "polling"], upgrade: false
           });
         _io.on('connect', function(data){
-   			 console.log('Ignition IO Connected');
+         console.log('Ignition IO Connected');
 
-  	});
+    });
   
         $(function(){
       allData.map = new google.maps.Map(document.getElementById('map'), {
@@ -25,14 +25,14 @@
      
  
   
-  	var data = ["866968030941919", "866968030939228", "792398348329", "78602119200", "7862201110", "111221111111", "12312312", "00000000", "352887075715304", "866968030811617", "866968030813480", "866968030916895", "868003030350321", "861359037386214", "353701091609913", "865205032022039", "8151022475", "866968030731278", "866968030817945", "868003030354059", "866968030955398", "868003030351550", "868003030359389", "868003030358951", "868003030359041", "868003030353028", "866968030815261", "868003030360056", "866968030955737", "868003030352335", "866968030906128", "221100", "8160811631", "1112211111111", "358739052157675", "866968030816673", "22222111818111", "868003030352608", "355087090015999", "123456789012345", "123456789012346", "009168695191", "007070197898", "007360060179", "358899053313154", "007455036378", "868003030350750", "358735072106197", "868003030354729", "002699453", "222", "007360065823"];
-   var data = ["866968030815261"];
+   // var data = ["866968030941919", "866968030939228", "792398348329", "78602119200", "7862201110", "111221111111", "12312312", "00000000", "352887075715304", "866968030811617", "866968030813480", "866968030916895", "868003030350321", "861359037386214", "353701091609913", "865205032022039", "8151022475", "866968030731278", "866968030817945", "868003030354059", "866968030955398", "868003030351550", "868003030359389", "868003030358951", "868003030359041", "868003030353028", "866968030815261", "868003030360056", "866968030955737", "868003030352335", "866968030906128", "221100", "8160811631", "1112211111111", "358739052157675", "866968030816673", "22222111818111", "868003030352608", "355087090015999", "123456789012345", "123456789012346", "009168695191", "007070197898", "007360060179", "358899053313154", "007455036378", "868003030350750", "358735072106197", "868003030354729", "002699453", "222", "007360065823"];
+    var data = ["868003030353515","866968030906128"];
 
-  	for(var i=0;i<data.length;i++)
-  	{
-	     _io.emit('acc',data[i]);
-	     _io.on(data[i]+'acc',(d1,d2,d3,d4,d5)=>{
-	     	//console.log("acc=",d1,d2,d3,d4,d5);
+    for(var i=0;i<data.length;i++)
+    {
+       _io.emit('acc',data[i]);
+       _io.on(data[i]+'acc',(d1,d2,d3,d4,d5)=>{
+        //console.log("acc=",d1,d2,d3,d4,d5);
 
                   var ico = {path: 'M17.402,0H5.643C2.526,0,0,3.467,0,6.584v34.804c0,3.116,2.526,5.644,5.643,5.644h11.759c3.116,0,5.644-2.527,5.644-5.644 V6.584C23.044,3.467,20.518,0,17.402,0z M22.057,14.188v11.665l-2.729,0.351v-4.806L22.057,14.188z M20.625,10.773 c-1.016,3.9-2.219,8.51-2.219,8.51H4.638l-2.222-8.51C2.417,10.773,11.3,7.755,20.625,10.773z M3.748,21.713v4.492l-2.73-0.349 V14.502L3.748,21.713z M1.018,37.938V27.579l2.73,0.343v8.196L1.018,37.938z M2.575,40.882l2.218-3.336h13.771l2.219,3.336H2.575z M19.328,35.805v-7.872l2.729-0.355v10.048L19.328,35.805z', scale : .6, strokeColor: 'white', strokeWeight: .10, fillOpacity: 1, fillColor: 'blue', offset: '5%', anchor: new google.maps.Point(10, 25), rotation : 0 }; 
 
@@ -58,16 +58,28 @@
             if(allData[key]){
               allData[key].mark.setMap(null);
 
-              allData[key].mark = new google.maps.Marker({
-                  position: allData[key].poly[1],
-                  map: allData.map,
-                  icon: ic,
-                  label:  { text: data.Device_Name+"_"+data.status+"_"+data.Device_ID, color: "#FE0000", fontSize: "13px", fontWeight: "bold"}
-                });
+              ////
+
+           allData[key].mark =    new google.maps.Marker({
+        position: allData[key].poly[1],
+        icon: 'https://cdn3.iconfinder.com/data/icons/iconic-1/32/arrow_up_alt1-128.png#'+data._id,
+        map: allData.map,
+        optimized: false
+    })
+
+
+              allData[key].overlay = new google.maps.OverlayView()
+    allData[key].overlay.draw = function() {
+        this.getPanes().markerLayer.id = 'markerLayer'+data._id;
+    }
+    allData[key].overlay.setMap(allData.map)
+    console.log('loaded')
+    //map.addListener('idle', changeMarker)
+              ////
               var temp = _.cloneDeep(allData[key].poly[1]);
               allData[key].poly[0]=_.cloneDeep(temp);
               allData[key].poly[1] = {lat:data.last_location.lat,lng:data.last_location.long};
-              liveTrack(allData.map,allData[key].mark,ico,allData[key].poly,50,10);
+              liveTrack(allData.map,allData[key].mark,ico,allData[key].poly,50,10,data._id);
             }
             else
             {
@@ -76,23 +88,37 @@
               allData[key].poly.push({lat:data.last_location.lat,lng:data.last_location.long});
               allData[key].poly.push({lat:data.last_location.lat,lng:data.last_location.long});
               if(data.last_location!=undefined){
-                allData[key].mark = new google.maps.Marker({
-                  position: {lat:data.last_location.lat,lng:data.last_location.long},
-                  map: allData.map,
-                  icon: ic,
-                  label:  { text: data.Device_Name+"_"+data.status, color: "#FE0000", fontSize: "13px", fontWeight: "bold"}
 
-                });
+                              ////
+
+           allData[key].mark =    new google.maps.Marker({
+        position: {lat:data.last_location.lat,lng:data.last_location.long},
+        icon: 'https://cdn3.iconfinder.com/data/icons/iconic-1/32/arrow_up_alt1-128.png#'+data._id,
+        map: allData.map,
+        optimized: false
+    })
+
+
+              allData[key].overlay = new google.maps.OverlayView()
+    allData[key].overlay.draw = function() {
+        this.getPanes().markerLayer.id = 'markerLayer'+data._id;
+    }
+    allData[key].overlay.setMap(allData.map)
+    console.log('loaded')
+    //map.addListener('idle', changeMarker)
+              ////
               }
-                liveTrack(allData.map,allData[key].mark,ico,allData[key].poly,50,10);
+                liveTrack(allData.map,allData[key].mark,ico,allData[key].poly,50,10,data._id);
               }
           }
         })(d4,ico)
   
-	     })
-  	}
+       })
+    }
 
-function liveTrack(map, mark, icons, coords,speed,delay) {
+
+
+function liveTrack(map, mark, icons, coords,speed,delay,id) {
         var target = 0;
         function _goToPoint() {
           if(target > coords.length)
@@ -118,7 +144,9 @@ function liveTrack(map, mark, icons, coords,speed,delay) {
                     if ((head != 0) || (head == NaN)) {
                         icons.rotation = head
                     }
-                    mark.setIcon(icons);
+                      // console.log(id,"=",head);
+            // $('#'+id+' img').css({transform :'rotate(' +head + 'deg)'});
+              //      mark.setIcon(icons);
                     mark.setPosition(new google.maps.LatLng(lat, lng));
                     setTimeout(_moveMarker,delay);
                 }
@@ -127,7 +155,9 @@ function liveTrack(map, mark, icons, coords,speed,delay) {
                     if ((head != 0) || (head == NaN)) {
                         icons.rotation = head
                     }
-                    mark.setIcon(icons);
+           //         mark.setIcon(icons);
+          // console.log(id,"=",head);
+ //$('#'+id+' img').css({transform :'rotate(' +head + 'deg)'});
                     mark.setPosition(dest);
                     target++;
                     setTimeout(_goToPoint,delay);
@@ -138,10 +168,26 @@ function liveTrack(map, mark, icons, coords,speed,delay) {
         _goToPoint();
     }
 
-</script>	
+</script> 
 </head>
 <body>
-	<div id="map" style="width:100%;height:700px"></div>
+  <div id="map" style="width:100%;height:700px"></div>
 </body>
 </html>
 
+
+
+<!-- 
+setInterval(function(){
+$('#5b7c173287e2af32ab4aab58  img').css({transform :'rotate(' + Math.floor(Math.random() * 360) + 'deg)'})
+$('#5b62b5cd50e0545862272337  img').css({transform :'rotate(' + Math.floor(Math.random() * 360) + 'deg)'})  
+},500);
+
+setInterval(function(){
+var a =  Math.floor(Math.random() * 360);
+var b =  Math.floor(Math.random() * 360);
+console.log(a,"-",b);
+$('#5b7c173287e2af32ab4aab58 img').css({transform :'rotate(' + a + 'deg)'})
+$('#5b62b5cd50e0545862272337 img').css({transform :'rotate(' + b + 'deg)'})  
+},500);
+ -->
