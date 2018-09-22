@@ -145,6 +145,7 @@ RichMarker.prototype['getHeight'] = RichMarker.prototype.getHeight;
  * @param {string} shadow The box shadow to set.
  */
 RichMarker.prototype.setShadow = function(shadow) {
+  console.log("setShadow");
   this.set('shadow', shadow);
   this.flat_changed();
 };
@@ -157,6 +158,7 @@ RichMarker.prototype['setShadow'] = RichMarker.prototype.setShadow;
  * @return {string} The box shadow.
  */
 RichMarker.prototype.getShadow = function() {
+  console.log("getShadow");
   return /** @type {string} */ (this.get('shadow'));
 };
 RichMarker.prototype['getShadow'] = RichMarker.prototype.getShadow;
@@ -166,14 +168,15 @@ RichMarker.prototype['getShadow'] = RichMarker.prototype.getShadow;
  * Flat changed event.
  */
 RichMarker.prototype.flat_changed = function() {
+   console.log("flat_changed");
   if (!this.ready_) {
     return;
   }
 
-  this.markerWrapper_.style['boxShadow'] =
-      this.markerWrapper_.style['webkitBoxShadow'] =
-      this.markerWrapper_.style['MozBoxShadow'] =
-      this.getFlat() ? '' : this.getShadow();
+   this.markerWrapper_.style['boxShadow'] ='';
+  //     this.markerWrapper_.style['webkitBoxShadow'] =
+  //     this.markerWrapper_.style['MozBoxShadow'] =
+  //     this.getFlat() ? '' : this.getShadow();
 };
 RichMarker.prototype['flat_changed'] = RichMarker.prototype.flat_changed;
 
@@ -184,6 +187,7 @@ RichMarker.prototype['flat_changed'] = RichMarker.prototype.flat_changed;
  * @param {Number} index The index to set.
  */
 RichMarker.prototype.setZIndex = function(index) {
+    console.log("setZIndex");
   this.set('zIndex', index);
 };
 RichMarker.prototype['setZIndex'] = RichMarker.prototype.setZIndex;
@@ -195,6 +199,7 @@ RichMarker.prototype['setZIndex'] = RichMarker.prototype.setZIndex;
  * @return {Number} The zIndex of the marker.
  */
 RichMarker.prototype.getZIndex = function() {
+     console.log("getZIndex");
   return /** @type {Number} */ (this.get('zIndex'));
 };
 RichMarker.prototype['getZIndex'] = RichMarker.prototype.getZIndex;

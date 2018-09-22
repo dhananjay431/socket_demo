@@ -70,55 +70,6 @@ $(function(){
 
 
 
-  function liveTrack(map, mark, icons, coords,speed,delay) {
-        var target = 0;
-        function _goToPoint() {
-          if(target > coords.length)
-            return ;
-            // dmap.speed = km_h;
-            var lat = mark.latlng.lat;
-            var lng = mark.latlng.lng;
-            var step = (speed * 1000 * delay) / 3600000; // in meters
-            if(coords[target] == undefined)
-              return;
-            var dest = new google.maps.LatLng(coords[target].lat, coords[target].lng);   
-            var dest2 = new google.maps.LatLng(mark.latlng.lat, mark.latlng.lng);
-            var distance = google.maps.geometry.spherical.computeDistanceBetween(dest, dest2); // in meters
-            var numStep = distance / step;
-            var i = 0;
-            var deltaLat = (coords[target].lat - lat) / numStep;
-            var deltaLng = (coords[target].lng - lng) / numStep;
-            function _moveMarker () {
-                lat += deltaLat;
-                lng += deltaLng;
-                i += step;
-                if (i < distance) {
-                    var head = google.maps.geometry.spherical.computeHeading(mark.getPosition(), new google.maps.LatLng(lat, lng))
-                    if ((head != 0) || (head == NaN)) {
-                        icons.rotation = head
-                    }
-                    marker1.draw(head);
-                   // mark.setIcon(icons);
-                   // mark.setPosition(new google.maps.LatLng(lat, lng));
-                    setTimeout(_moveMarker,delay);
-                }
-                else {
-                    var head = google.maps.geometry.spherical.computeHeading(mark.getPosition(), new google.maps.LatLng(lat, lng));
-                    if ((head != 0) || (head == NaN)) {
-                        icons.rotation = head
-                    }
-                     marker1.draw(head);
-                    //mark.setIcon(icons);
-                    //mark.setPosition(dest);
-                    target++;
-                    setTimeout(_goToPoint,delay);
-                }
-            }
-            _moveMarker();
-        }
-        _goToPoint();
-    }
-
   CustomMarker = function(latlng, map, args) {
   this.latlng = latlng;
   this.args = args;

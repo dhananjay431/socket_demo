@@ -161,3 +161,14 @@ $('#5b62b5cd50e0545862272337 img').css({transform :'rotate(' + b + 'deg)'})
 
  -->
 
+
+p = 
+function show(data){
+  return  new Promise(function(rev,rej){
+  if(data < 0)
+  rej('0<')
+  else
+  rev('0>')
+})
+}
+show().then(function(resp){ console.log(resp)},function(resp){ console.log(resp)})

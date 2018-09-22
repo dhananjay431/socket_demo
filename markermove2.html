@@ -22,7 +22,7 @@
     width: 200px;
     height: 78px;
     background: rgba(0,0,0,0.85);
-    box-shadow: rgba(0,0,0,0.5) 0 3px 5px;
+  //  box-shadow: rgba(0,0,0,0.5) 0 3px 5px;
     -moz-box-shadow: rgba(0,0,0,0.5) 0 3px 5px;
     -webkit-box-shadow: rgba(0,0,0,0.5) 0 3px 5px;
     color: #fff;
@@ -62,6 +62,7 @@
 
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js"></script> 
     <script src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+    <script src="richmarker.js"></script>
     
     <script type="text/javascript" src="../markerAnimate.js"></script>
 
@@ -111,12 +112,31 @@ var speed= 100;
           mapTypeId: google.maps.MapTypeId.ROADMAP
         }
        var  map = new google.maps.Map(document.getElementById('map_canvas'), mapOptions);
+
+         map.addListener('center_changed', function() {
+			marker2.setPosition(new google.maps.LatLng(18.640530000000002, 73.87692000000001));
+  });
+
+       marker2 = new RichMarker({
+          position:new google.maps.LatLng(18.640530000000002, 73.87692000000001),
+          map: map,
+          draggable: false,
+          content: `<img src="./socket_connection/top-car-view-png-34864.png" width="10%" height="10%">`
+          });
+
         marker = new google.maps.Marker({
             position: myLatlng,
             map: map,
             title: 'Hello World!',
             //icon: 'https://maps.google.com/mapfiles/kml/shapes/parking_lot_maps.png'
-            icon: icons.car
+            icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png?id=123'
+        });
+      marker3 = new google.maps.Marker({
+            position: myLatlng,
+            map: map,
+            title: 'Hello World!',
+            icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png?id=123'
+       
         });
 
 
@@ -216,12 +236,12 @@ var speed= 100;
 
 function play(){
    
-  animateMarker(marker,flightPlanCoordinates,speed)
+  animateMarker(marker2,flightPmarkerlanCoordinates,speed)
 }
 function stop(){
   console.log(flag);
   if(flag == 'init'){
-    animateMarker(marker,flightPlanCoordinates,speed)
+    animateMarker(marker2,flightPlanCoordinates,speed)
       flag = 'stop';
 
   }else
@@ -295,6 +315,8 @@ function fast(b){
   
   $(function(){
     initialize();
+
+
    //  animateMarker(marker,flightPlanCoordinates,200);
   })();
     
